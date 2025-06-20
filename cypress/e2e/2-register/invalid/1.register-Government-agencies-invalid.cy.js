@@ -6,7 +6,8 @@ describe("Register Government agencies - Negative tests", () => {
     // อีเมลไม่ถูกต้อง: ระบบจะตรวจสอบว่าอีเมลถูกกรอกมาอย่างถูกต้อง
     // เบอร์โทรศัพท์ไม่ถูกต้อง: ระบบจะแจ้งข้อผิดพลาดถ้าเบอร์โทรศัพท์ไม่ถูกต้อง
     // ไปที่หน้า Dashboard
-    cy.visit("https://sao.devditto.com/dashboard/");
+    // cy.visit("https://sao.devditto.com/dashboard/");
+    cy.visit("https://joint-sao.devditto.com/home/");
 
     // คลิก 'เข้าใช้งานระบบ'
     cy.contains("เข้าใช้งานระบบ").click();
@@ -17,7 +18,7 @@ describe("Register Government agencies - Negative tests", () => {
     cy.url().should("include", "/register");
 
     // เลือก 'หน่วยงานภาครัฐ'
-    cy.get("h3.MuiTypography-root").contains("หน่วยงานภาครัฐ").click();
+    cy.contains("สมัครสมาชิกด้วย ThaiID").click();
 
     // รอให้หน้าโหลด
     cy.wait(1000);

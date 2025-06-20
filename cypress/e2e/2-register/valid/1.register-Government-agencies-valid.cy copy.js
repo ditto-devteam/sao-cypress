@@ -1,7 +1,7 @@
 describe("Register Government agencies", () => {
   it("should navigate to the registration page", () => {
     // 1. ไปที่ URL ของหน้า dashboard
-    cy.visit("https://sao.devditto.com/dashboard/");
+    cy.visit("https://joint-sao.devditto.com/home/");
 
     cy.contains("เข้าใช้งานระบบ").click();
 
@@ -9,64 +9,47 @@ describe("Register Government agencies", () => {
 
     cy.url().should("include", "/register"); // ตรวจสอบ URL ว่ามี '/register' หรือไม่
 
-    cy.get("h3.MuiTypography-root").contains("หน่วยงานภาครัฐ").click();
+    // เลือก สมัครสมาชิกด้วย ThaiID
+    cy.contains("สมัครสมาชิกด้วย ThaiID").click();
+
+    cy.wait(1000);
+    // data-testid="button-privacy-policy-text"
+    cy.get('[data-testid="button-privacy-policy-text"]').click();
 
     cy.wait(1000);
 
-    // คลิกที่ปุ่มเพื่อเปิดกล่องเลือกไฟล์
-    cy.get(
-      "button.MuiButtonBase-root.MuiCardActionArea-root.css-ja9q1h"
-    ).click(); // คลิกปุ่ม
-    cy.wait(1000);
+    cy.origin("https://imauthsbx.bora.dopa.go.th", () => {
+      cy.contains("button", "ยืนยัน").should("be.visible").click();
+    });
 
+    cy.wait(2000);
+
+    // กลับมาที่ website aso
+    cy.contains("label", "อัปโหลดรูป").click();
+
+    cy.wait(2000);
 
     // ข้อมูลผู้ใช้งาน
     cy.get('input[type="file"]').attachFile("images1.jpg");
 
-    cy.wait(1000);
+    cy.wait(2000);
 
-    cy.get("label").contains("ประเภทผู้ใช้งาน").should("be.visible");
-
-    cy.get("label")
-      .contains("ประเภทผู้ใช้งาน")
-      .invoke("attr", "for")
-      .then((inputId) => {
-        // Escape ตัวอักษรพิเศษใน inputId และค้นหา element โดยใช้ id ที่ escape แล้ว
-        const escapedId = inputId.replace(/:/g, "\\:"); // Escape ':' ใน inputId
-        cy.get(`#${escapedId}`).click(); // คลิกที่ input ที่มี id ที่เชื่อมโยงกับ label
-      });
-
-    // รอให้ autocomplete dropdown ปรากฏ (ให้เวลารายการโหลด)
-    cy.get(".MuiAutocomplete-listbox", { timeout: 10000 }).should("be.visible");
-
-    // เลือกตัวเลือกที่ต้องการ "นาย"
-    cy.get(".MuiAutocomplete-listbox").contains("เจ้าหน้าที่").click();
-
+    // เลือกประเภทผู้ใช้งาน
+    cy.get('input[name="userType"][value="1"]').check({ force: true });
+    // ชื่อผู้ใช้งาน
     cy.get('input[name="username"]').type("chatchawan");
-
+    // รหัสผ่าน
     cy.get('input[name="password"]').type("Abc12345@++");
-
+    // ยินยันรหัสผ่าน
     cy.get('input[name="confirmPassword"]').type("Abc12345@++");
 
-    // ตรวจสอบว่า label มีข้อความ "คำนำหน้าชื่อ" และ input ที่เกี่ยวข้องแสดงอยู่
-    cy.get("label").contains("คำนำหน้าชื่อ").should("be.visible");
-    // หาค่า input ที่เชื่อมโยงกับ label ที่มีข้อความ "คำนำหน้าชื่อ"
-    cy.get("label")
-      .contains("คำนำหน้าชื่อ")
-      .invoke("attr", "for")
-      .then((inputId) => {
-        // Escape ตัวอักษรพิเศษใน inputId และค้นหา element โดยใช้ id ที่ escape แล้ว
-        const escapedId = inputId.replace(/:/g, "\\:"); // Escape ':' ใน inputId
-        cy.get(`#${escapedId}`).click(); // คลิกที่ input ที่มี id ที่เชื่อมโยงกับ label
-      });
+    // 1. เปิด dropdown เลือก คำนำหน้าชื่อ
+    cy.get(".MuiAutocomplete-popupIndicator").first().click();
 
-    // รอให้ autocomplete dropdown ปรากฏ (ให้เวลารายการโหลด)
-    cy.get(".MuiAutocomplete-listbox", { timeout: 10000 }).should("be.visible");
+    cy.wait(2000);
 
-    // เลือกตัวเลือกที่ต้องการ "นาย"
-    cy.get(".MuiAutocomplete-listbox").contains("นาย").click();
-
-    cy.wait(1000);
+    cy.contains("li", "นาย").click();
+    cy.wait(2000);
 
     cy.get('input[name="firstName"]').type("ชัชวาล");
     cy.wait(1000);
@@ -81,22 +64,19 @@ describe("Register Government agencies", () => {
     cy.get('input[name="idCardNumber"]').type("1119900144845");
     cy.wait(1000);
 
-    cy.get('input[name="position"]').type("พลเรือเอก พิเศษสุดในพลเรือ");
-
-    // คลิกที่ปุ่มเพื่อเปิดปฏิทิน
+    // เพิ่มวันเกิด
+    // 1. คลิกเปิด Date Picker
     cy.get('button[aria-label="Choose date"]').click();
-    // รอให้ปฏิทินแสดงขึ้นมา
-    cy.get(".MuiCalendarPicker-root").should("be.visible");
     cy.wait(1000);
-    // คลิกที่ปุ่มที่มีวันที่ 6
-    cy.get("button.MuiPickersDay-root")
-      .contains("6") // ตรวจสอบว่าเป็นปุ่มที่มีข้อความ "6"
-      .click(); // คลิกที่วันที่ 6
+    cy.get('button[aria-label*="switch to year view"]').click();
+    cy.wait(1000);
+    // เลือกปี
+    cy.contains("button", "2532").click();
 
     cy.wait(1000);
-    // ข้อมูลที่อยู่ตามบัตรประชาชน
+
+    // // ข้อมูลที่อยู่ตามบัตรประชาชน
     cy.get('input[name="idCardAddress"]').type("91/111");
-
     cy.wait(1000);
 
     cy.get('[data-cy="idCardProvince"] input').type("สมุทรปราการ"); // พิมพ์ชื่อจังหวัด
@@ -151,15 +131,11 @@ describe("Register Government agencies", () => {
 
     cy.wait(2000);
 
-
-    
     // ค้นหา input[type="file"] และแนบไฟล์ PDF ที่ต้องการอัพโหลด
     cy.get('input[type="file"]') // เลือก input file
       .attachFile("images1.jpg"); // อัพโหลดไฟล์ PDF จากโฟลเดอร์ fixtures
 
     cy.wait(5000);
-
-
 
     // cy.get('button.MuiButtonBase-root').click();
     cy.contains("อัพโหลดแบบฟอร์ม ลงทะเบียนเข้าใช้งานระบบลงนามแล้ว").click();
@@ -185,13 +161,13 @@ describe("Register Government agencies", () => {
     cy.get(".MuiPaper-root.MuiDialog-paper").should("be.visible");
     cy.wait(2000);
 
-    // คลิกปุ่ม "ยืนยัน" ภายใน Dialog
-    // ใช้ find ค้นหาปุ๋มที่อยู่ภายใน Muipaper-root.MuiDialog-paper
+    // // คลิกปุ่ม "ยืนยัน" ภายใน Dialog
+    // // ใช้ find ค้นหาปุ๋มที่อยู่ภายใน Muipaper-root.MuiDialog-paper
     cy.get(".MuiPaper-root.MuiDialog-paper")
       .find(".MuiButton-root")
       .contains("ยืนยัน")
       .click();
 
-    cy.wait(1000);
+    cy.wait(30000);
   });
 });
