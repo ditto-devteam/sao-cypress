@@ -1,6 +1,7 @@
 describe("Register Government agencies", () => {
   it("should navigate to the registration page", () => {
     const randomSuffix = Date.now(); // ใช้ timestamp เพื่อให้ unique
+
     const user = {
       username: `user_${randomSuffix}`,
       password: "Abc12345@++",
@@ -17,23 +18,25 @@ describe("Register Government agencies", () => {
       birthYear: "2532",
     };
 
-    cy.visit("https://joint-sao.devditto.com/home/");
-    cy.contains("เข้าใช้งานระบบ").click();
-    cy.contains("สมัครสมาชิก").click();
-    cy.url().should("include", "/register");
-    cy.contains("สมัครสมาชิกด้วย ThaiID").click();
-    cy.wait(1000);
-
-    cy.get('[data-testid="button-privacy-policy-text"]').click();
-    cy.wait(1000);
-
-    cy.origin("https://imauthsbx.bora.dopa.go.th", () => {
-      cy.contains("button", "ยืนยัน").should("be.visible").click();
-    });
-
+    cy.visit("https://jointsao.audit.go.th/login/");
     cy.wait(2000);
-    cy.contains("label", "อัปโหลดรูป").click();
-    cy.get('input[type="file"]').attachFile("janeeyeh_1748752324201.jpeg");
+    // cy.contains("เข้าใช้งานระบบ").click();
+    cy.contains("สมัครสมาชิก").click();
+
+    // cy.url().should("include", "/register");
+    // cy.contains("สมัครสมาชิกด้วย ThaiID").click();
+    // cy.wait(1000);
+
+    // cy.get('[data-testid="button-privacy-policy-text"]').click();
+    // cy.wait(1000);
+
+    // cy.origin("https://imauthsbx.bora.dopa.go.th", () => {
+    //   cy.contains("button", "ยืนยัน").should("be.visible").click();
+    // });
+
+    // cy.wait(2000);
+    // cy.contains("label", "อัปโหลดรูป").click();
+    // cy.get('input[type="file"]').attachFile("janeeyeh_1748752324201.jpeg");
 
     cy.get('input[name="userType"][value="1"]').check({ force: true });
     cy.get('input[name="username"]').type(user.username);
