@@ -8,12 +8,9 @@ Cypress.on("uncaught:exception", (err) => {
   return true; // error อื่นให้ fail ปกติ
 });
 
+// //  เอกชน
+// describe("Document", () => {
+//     it("Register", () => {
 
-
-
-//  เอกชน
-describe("Document", () => {
-    it("Register", () => {
-
-    }
-}
+//     }
+// }
