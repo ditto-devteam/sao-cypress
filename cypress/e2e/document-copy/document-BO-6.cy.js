@@ -14,6 +14,7 @@ describe("Document-Copy-FO", () => {
   it("ยืนยันการบันทึกข้อมูลคัดสำเนา", () => {
     // เข้า login page
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
+    cy.screenshot("BO-01-login-page");
 
     // login
     cy.get('input[name="email"]', { timeout: 10000 }).type(
@@ -21,20 +22,25 @@ describe("Document-Copy-FO", () => {
     );
     cy.get('input[name="password"]').type("System@001");
     cy.contains("button", "Login").click();
+    cy.screenshot("BO-02-after-login");
 
+    // เปิดเมนู
     cy.get(
       "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
     )
-      .first() // เลือกปุ่มแรก
+      .first()
       .should("be.visible")
       .click();
+    cy.screenshot("BO-03-menu-opened");
 
     cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
       timeout: 500,
     }).click();
+    cy.screenshot("BO-04-service-menu");
 
     // เข้าไปยังหน้ารายการคัดสำเนา
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
+    cy.screenshot("BO-05-document-copy-page");
 
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";
@@ -50,17 +56,22 @@ describe("Document-Copy-FO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
+    cy.screenshot("BO-06-edit-request");
 
-    // กดปุ่มบันทึกข้อมูล
-    cy.contains("button", "บันทึกข้อมูลเสร็จสิ้น").should("be.visible").click();
+    // cy.contains("button", "สร้างใบเสร็จรับเงิน").click();
+    cy.contains("button", "สร้างใบเสร็จรับเงิน", { timeout: 500 })
+      .should("be.visible")
+      .click();
+    cy.screenshot("BO-07-after-save-click");
 
-    // รอ dialog ยืนยันปรากฏ
-    cy.get('div[role="dialog"]', { timeout: 5000 }).should("be.visible");
+    cy.contains("button", "ยืนยันข้อมูล").click();
+    cy.screenshot("BO-08-after-confirm-click");
 
     // กดปุ่ม "ยืนยัน" ภายใน dialog
     cy.get('div[role="dialog"]')
       .contains("button", "ยืนยัน")
       .should("be.visible")
       .click({ force: true });
+    cy.screenshot("BO-09-confirmed");
   });
 });
