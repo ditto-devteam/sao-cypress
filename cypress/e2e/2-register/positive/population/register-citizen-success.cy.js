@@ -38,11 +38,6 @@ describe("Register population agencies", () => {
       .find('input[type="file"]')
       .attachFile("janeeyeh_1748752324201.jpeg");
 
-    // cy.get('input[type="radio"][name="userTypeCode"][value="01"]').check();
-    // cy.get('input[type="radio"][name="userTypeCode"][value="01"]').check({
-    //   force: true,
-    // });
-    // เลือก radio "ประชาชนทั่วไป"
     cy.get('input[name="userTypeCode"][value="01"]').check({ force: true });
 
     // cy.get("label.MuiFormControlLabel-root").contains("ประชาชนทั่วไป").click();
