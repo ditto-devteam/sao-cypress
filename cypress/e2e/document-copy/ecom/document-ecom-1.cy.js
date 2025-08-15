@@ -19,7 +19,7 @@ describe("Document-Copy-FO", () => {
     cy.get("body", { timeout: 30000 }).should("be.visible");
     // cy.screenshot("01-login-page"); // capture หน้า login
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
-
+    cy.wait(5000);
     // login
     // รอให้ช่อง username พร้อม
     cy.get('input[name="username"]', { timeout: 15000 })

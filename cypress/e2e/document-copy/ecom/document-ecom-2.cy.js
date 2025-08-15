@@ -16,10 +16,11 @@ describe("Document-Copy-BO", () => {
   const targetFirstName = "ชัชวาล";
 
   it("Document-Copy-BO", () => {
+    cy.viewport(1280, 720);
+
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     // cy.screenshot("BO-01-login-page"); // capture หน้า login
     cy.wait(5000);
-
     // Login
     cy.get('input[name="email"]', { timeout: 10000 })
       .should("be.visible")
@@ -28,20 +29,10 @@ describe("Document-Copy-BO", () => {
       .should("be.visible")
       .type(loginPassword);
     cy.contains("button", "Login").click();
+    cy.wait(5000);
 
-    cy.get(
-      "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
-    )
-      .first()
-      .should("be.visible")
-      .click();
-
-    cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
-      timeout: 500,
-    }).click();
-
-    cy.get('a[href="/010501/document-copy"]', { timeout: 10000 }).click();
-
+    cy.contains("ชำระค่าธรรมเนียม").click();
+    cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
     // หา row ของผู้ยื่น FO
     cy.get('div[role="row"]', { timeout: 10000 })
       .filter((index, row) => {
