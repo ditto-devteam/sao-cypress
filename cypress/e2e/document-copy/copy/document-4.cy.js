@@ -15,12 +15,10 @@ describe("Document-Copy-BO", () => {
     // เข้าสู่ระบบ Backoffice
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     cy.get("body", { timeout: 20000 }).should("be.visible");
-    // cy.screenshot("BO-01-login-page");
 
     cy.get('input[name="email"]').type("system01@email.com");
     cy.get('input[name="password"]').type("System@001");
     cy.contains("button", "Login").click();
-    // cy.screenshot("BO-02-after-login");
 
     cy.get(
       "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
@@ -28,15 +26,12 @@ describe("Document-Copy-BO", () => {
       .first()
       .should("be.visible")
       .click();
-    // cy.screenshot("BO-03-menu-opened");
 
     cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
       timeout: 5000,
     }).click();
-    // cy.screenshot("BO-04-menu-selected");
 
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-    // cy.screenshot("BO-05-document-copy-page");
 
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";

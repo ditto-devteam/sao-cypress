@@ -10,11 +10,11 @@ Cypress.on("uncaught:exception", (err) => {
   return true; // error อื่นให้ fail ปกติ
 });
 
+//  มันต้องอัพโหลดไฟล์ ด้วย
 describe("Document-Copy-FO", () => {
   it("ยืนยันการบันทึกข้อมูลคัดสำเนา", () => {
     // เข้า login page
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-    // cy.screenshot("BO-01-login-page");
 
     // login
     cy.get('input[name="email"]', { timeout: 10000 }).type(
@@ -22,7 +22,6 @@ describe("Document-Copy-FO", () => {
     );
     cy.get('input[name="password"]').type("System@001");
     cy.contains("button", "Login").click();
-    // cy.screenshot("BO-02-after-login");
 
     // เปิดเมนู
     cy.get(
@@ -31,16 +30,13 @@ describe("Document-Copy-FO", () => {
       .first()
       .should("be.visible")
       .click();
-    // cy.screenshot("BO-03-menu-opened");
 
     cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
       timeout: 500,
     }).click();
-    // cy.screenshot("BO-04-service-menu");
 
     // เข้าไปยังหน้ารายการคัดสำเนา
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-    // cy.screenshot("BO-05-document-copy-page");
 
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";
@@ -56,18 +52,14 @@ describe("Document-Copy-FO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    // cy.screenshot("BO-06-edit-request");
+    cy.wait(1000);
 
-    // cy.contains("button", "สร้างใบเสร็จรับเงิน").click();
-    cy.contains("button", "สร้างใบเสร็จรับเงิน", { timeout: 500 })
-      .should("be.visible")
-      .click();
-    // cy.screenshot("BO-07-after-save-click");
+    // 1.อัปโหลดไฟล์
 
-    cy.contains("button", "ยืนยันข้อมูล").click();
-    // cy.screenshot("BO-08-after-confirm-click");
+    cy.get('input[type="file"]').should("exist").attachFile("uploadfile.pdf");
+    cy.contains("button", "บันทึกข้อมูลเสร็จสิ้น", { timeout: 400 }).click();
 
-    // กดปุ่ม "ยืนยัน" ภายใน dialog
+    // // กดปุ่ม "ยืนยัน" ภายใน dialog
     cy.get('div[role="dialog"]')
       .contains("button", "ยืนยัน")
       .should("be.visible")

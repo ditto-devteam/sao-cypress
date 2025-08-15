@@ -14,14 +14,12 @@ describe("Document-Copy-FO", () => {
   it("ยืนยันการบันทึกข้อมูลคัดสำเนา", () => {
     // เข้า login page
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-
+    cy.wait(2000);
     // login
-    cy.get('input[name="email"]', { timeout: 10000 }).type(
-      "system01@email.com"
-    );
-    cy.get('input[name="password"]').type("System@001");
+    cy.get('input[name="email"]', { timeout: 2000 }).type("system01@email.com");
+    cy.get('input[name="password"]', { timeout: 2000 }).type("System@001");
     cy.contains("button", "Login").click();
-
+    cy.wait(2000);
     // เปิดเมนู
     cy.get(
       "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
@@ -36,7 +34,7 @@ describe("Document-Copy-FO", () => {
 
     // เข้าไปยังหน้ารายการคัดสำเนา
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-
+    cy.wait(2000);
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";
     cy.get('div[role="row"]')
@@ -51,9 +49,7 @@ describe("Document-Copy-FO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    // cy.screenshot("BO-06-edit-request");
-
-    cy.wait(1000);
+    cy.wait(2000);
     cy.contains("button", "บันทึกข้อมูลเสร็จสิ้น").click();
 
     // // กดปุ่ม "ยืนยัน" ภายใน dialog

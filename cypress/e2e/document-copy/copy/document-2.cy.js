@@ -35,17 +35,13 @@ describe("Document-Copy-BO", () => {
       .first()
       .should("be.visible")
       .click();
-    // cy.screenshot("BO-03-menu-opened"); // capture หลังเปิดเมนู
 
     cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
       timeout: 500,
     }).click();
-    // cy.screenshot("BO-04-menu-selected"); // capture หลังเลือกเมนู
 
     cy.get('a[href="/010501/document-copy"]', { timeout: 10000 }).click();
-    // cy.screenshot("BO-05-document-copy-page"); // capture หน้า document copy
 
-    // หา row ของผู้ยื่น FO
     cy.get('div[role="row"]', { timeout: 10000 })
       .filter((index, row) => {
         const firstName = Cypress.$(row)
@@ -58,21 +54,16 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    // cy.screenshot("BO-06-edit-request"); // capture หน้าแก้ไขข้อมูล
 
     cy.wait(200);
 
-    // กรอกข้อมูลเอกสาร
     cy.get('input[name="documentCopyRequestFileList.0.pageTotal"]', {
-      timeout: 5000,
-    })
-      .should("be.visible")
-      .clear()
-      .type("2");
+      timeout: 1000,
+    }).type("2");
+    cy.wait(1000);
 
     cy.get(
-      'div[name="documentCopyRequestFileList.0.documentTypeId"] button[aria-label="Open"]',
-      { timeout: 5000 }
+      'div[name="documentCopyRequestFileList.0.documentTypeId"] button[aria-label="Open"]'
     )
       .first()
       .click();
@@ -92,7 +83,6 @@ describe("Document-Copy-BO", () => {
       .first()
       .click();
     cy.contains("li", "อนุมัติ").click();
-    // cy.screenshot("BO-07-filled-data"); // capture หลังกรอกข้อมูล
 
     // เลือกธนาคาร
     cy.contains("label", "เลือกธนาคาร")
@@ -100,11 +90,9 @@ describe("Document-Copy-BO", () => {
       .find('button[aria-label="Open"]', { timeout: 5000 })
       .click();
     cy.contains("li", "ธนาคารกรุงไทย").click();
-    // cy.screenshot("BO-08-selected-bank"); // capture หลังเลือกธนาคาร
-
+    cy.wait(900);
     // บันทึกและยืนยัน
     cy.contains("button", "บันทึกข้อมูล", { timeout: 5000 }).click();
     cy.contains("button", "ยืนยัน", { timeout: 5000 }).click();
-    // cy.screenshot("BO-09-after-confirm"); // capture หลังยืนยัน
   });
 });

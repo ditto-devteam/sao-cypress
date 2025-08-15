@@ -21,8 +21,17 @@ describe("Document-Copy-FO", () => {
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
 
     // login
-    cy.get('input[name="username"]', { timeout: 500 }).type("chatchawan");
-    cy.get('input[name="password"]', { timeout: 500 }).type("Abcd@12345++");
+    // รอให้ช่อง username พร้อม
+    cy.get('input[name="username"]', { timeout: 15000 })
+      .should("be.visible")
+      .type("chatchawan");
+
+    cy.get('input[name="password"]', { timeout: 15000 })
+      .should("be.visible")
+      .type("Abcd@12345++");
+
+    // cy.get('input[name="username"]', { timeout: 4000 }).type("chatchawan");
+    // cy.get('input[name="password"]', { timeout: 4000 }).type("Abcd@12345++");
     cy.contains("button", "เข้าสู่ระบบ").click();
 
     // รอ profile load

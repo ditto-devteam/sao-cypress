@@ -23,6 +23,7 @@ describe("Document-Copy-FO", () => {
     cy.visit("https://jointsao.audit.go.th/login/");
     cy.get("body", { timeout: 30000 }).should("be.visible");
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
+    cy.wait(3000);
 
     // รอให้ฟอร์ม login แสดงก่อน
     cy.get('input[name="username"]', { timeout: 10000 })
@@ -34,7 +35,7 @@ describe("Document-Copy-FO", () => {
       .type("Abcd@12345++");
 
     cy.contains("button", "เข้าสู่ระบบ").click();
-
+    cy.wait(2000);
     // รอ profile load
     cy.wait("@getProfile");
 
@@ -49,14 +50,13 @@ describe("Document-Copy-FO", () => {
     cy.url().should("include", "/document-copy");
 
     cy.contains("a", "ประวัติการคัดสำเนา").should("be.visible").click();
-
+    cy.wait(3000);
     // // กดดูรายละเอียดรายการแรก
     cy.get('button[aria-label="ดูรายละเอียด"]')
       .first()
       .should("be.visible")
       .click();
-
-    // // // อัปโหลดไฟล์หลักฐาน
+    cy.wait(2000);
     cy.get('input[type="file"]').should("exist").attachFile("uploadfile.jpg");
 
     // // // กดบันทึกและยืนยัน
