@@ -1,0 +1,87 @@
+// ปิด fail test ถ้าเจอ React error #418, #423 หรือ #329
+Cypress.on("uncaught:exception", (err) => {
+  if (
+    err.message.includes("Minified React error #418") ||
+    err.message.includes("Minified React error #423") ||
+    err.message.includes("Minified React error #329")
+  ) {
+    return false; // ข้าม error เหล่านี้
+  }
+  return true; // error อื่นให้ fail ปกติ
+});
+
+describe("Document-Copy-BO", () => {
+  const loginEmail = "system01@email.com";
+  const loginPassword = "System@001";
+  const targetFirstName = "ชัชวาล";
+
+  it("Document-Copy-BO", () => {
+    cy.visit("https://jointsao-backoffice.audit.go.th/login");
+    // cy.screenshot("BO-01-login-page"); // capture หน้า login
+
+    // Login
+    cy.get('input[name="email"]', { timeout: 10000 })
+      .should("be.visible")
+      .type(loginEmail);
+    cy.get('input[name="password"]', { timeout: 10000 })
+      .should("be.visible")
+      .type(loginPassword);
+    cy.contains("button", "Login").click();
+    // cy.screenshot("BO-02-after-login"); // capture หลัง login
+
+    cy.get(
+      "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
+    )
+      .first()
+      .should("be.visible")
+      .click();
+    // cy.screenshot("BO-03-menu-opened"); // capture หลังเปิดเมนู
+
+    cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
+      timeout: 500,
+    }).click();
+    // cy.screenshot("BO-04-menu-selected"); // capture หลังเลือกเมนู
+
+    cy.get('a[href="/010501/document-copy"]', { timeout: 10000 }).click();
+    // cy.screenshot("BO-05-document-copy-page"); // capture หน้า document copy
+
+    // หา row ของผู้ยื่น FO
+    cy.get('div[role="row"]', { timeout: 10000 })
+      .filter((index, row) => {
+        const firstName = Cypress.$(row)
+          .find('div[data-field="I-requestFirstName"]')
+          .text()
+          .trim();
+        return firstName === targetFirstName;
+      })
+      .first()
+      .within(() => {
+        cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
+      });
+    // cy.screenshot("BO-06-edit-request"); // capture หน้าแก้ไขข้อมูล
+
+    cy.wait(200);
+
+    cy.get(
+      'div[name="documentCopyRequestFileList.0.approveStatusId"] button[aria-label="Open"]',
+      { timeout: 5000 }
+    )
+      .first()
+      .click();
+    cy.contains("li", "อนุมัติ").click();
+    // cy.screenshot("BO-07-filled-data"); // capture หลังกรอกข้อมูล
+
+    // เลือกธนาคาร
+    cy.contains("label", "เลือกธนาคาร")
+      .parent()
+      .find('button[aria-label="Open"]', { timeout: 5000 })
+      .click();
+    cy.contains("li", "ธนาคารกรุงไทย").click();
+    // cy.screenshot("BO-08-selected-bank"); // capture หลังเลือกธนาคาร
+
+    // บันทึกและยืนยัน
+    cy.contains("button", "บันทึกข้อมูล", { timeout: 5000 }).click();
+    cy.contains("button", "ยืนยัน", { timeout: 5000 }).click();
+    // cy.screenshot("BO-09-after-confirm"); // capture หลังยืนยัน
+  });
+});

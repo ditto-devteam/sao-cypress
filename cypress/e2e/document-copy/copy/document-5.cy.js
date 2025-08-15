@@ -14,14 +14,14 @@ describe("Document-Copy-BO", () => {
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
     // เข้าสู่ระบบ Backoffice
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-    cy.screenshot("BO-01-login-page"); // capture หน้า login
+    // cy.screenshot("BO-01-login-page"); // capture หน้า login
 
     cy.get('input[name="email"]', { timeout: 10000 }).type(
       "system01@email.com"
     );
     cy.get('input[name="password"]').type("System@001");
     cy.contains("button", "Login").click();
-    cy.screenshot("BO-02-after-login"); // capture หลัง login
+    // cy.screenshot("BO-02-after-login"); // capture หลัง login
 
     // เปิดเมนูหลัก
     cy.get(
@@ -30,16 +30,16 @@ describe("Document-Copy-BO", () => {
       .first()
       .should("be.visible")
       .click();
-    cy.screenshot("BO-03-menu-opened"); // capture หลังเปิดเมนู
+    // cy.screenshot("BO-03-menu-opened"); // capture หลังเปิดเมนู
 
     cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
       timeout: 5000,
     }).click();
-    cy.screenshot("BO-04-menu-selected"); // capture หลังเลือกเมนู
+    // cy.screenshot("BO-04-menu-selected"); // capture หลังเลือกเมนู
 
     // เข้าไปยังหน้ารายการคัดสำเนา
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-    cy.screenshot("BO-05-document-copy-page"); // capture หน้า document copy
+    // cy.screenshot("BO-05-document-copy-page"); // capture หน้า document copy
 
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";
@@ -55,12 +55,12 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    cy.screenshot("BO-06-selected-request"); // capture หลังเลือกผู้ขอ
+    // cy.screenshot("BO-06-selected-request"); // capture หลังเลือกผู้ขอ
 
     // อนุมัติคำขอ
     cy.contains("button", "อนุมัติ").should("be.visible").click();
     cy.contains("button", "ยืนยันข้อมูล").should("be.visible").click();
-    cy.screenshot("BO-07-approved"); // capture หลังกดยืนยันข้อมูล
+    // cy.screenshot("BO-07-approved"); // capture หลังกดยืนยันข้อมูล
 
     // ยืนยัน dialog
     cy.get('div[role="dialog"]', { timeout: 5000 })
@@ -70,6 +70,6 @@ describe("Document-Copy-BO", () => {
           .should("be.visible")
           .click({ force: true });
       });
-    cy.screenshot("BO-08-dialog-confirmed"); // capture หลัง dialog ยืนยัน
+    // cy.screenshot("BO-08-dialog-confirmed"); // capture หลัง dialog ยืนยัน
   });
 });

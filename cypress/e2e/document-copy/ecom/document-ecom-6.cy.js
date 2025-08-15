@@ -1,42 +1,41 @@
-// ปิด fail test ถ้าเจอ React minified errors
+// ปิด fail test ถ้าเจอ React error #418, #423 หรือ #329
 Cypress.on("uncaught:exception", (err) => {
   if (
     err.message.includes("Minified React error #418") ||
     err.message.includes("Minified React error #423") ||
     err.message.includes("Minified React error #329")
   ) {
-    return false;
+    return false; // ข้าม error เหล่านี้
   }
-  return true;
+  return true; // error อื่นให้ fail ปกติ
 });
 
-describe("Document-Copy-BO", () => {
-  it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
-    // เข้าสู่ระบบ Backoffice
+describe("Document-Copy-FO", () => {
+  it("ยืนยันการบันทึกข้อมูลคัดสำเนา", () => {
+    // เข้า login page
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-    cy.get("body", { timeout: 20000 }).should("be.visible");
-    cy.screenshot("BO-01-login-page");
 
-    cy.get('input[name="email"]').type("system01@email.com");
+    // login
+    cy.get('input[name="email"]', { timeout: 10000 }).type(
+      "system01@email.com"
+    );
     cy.get('input[name="password"]').type("System@001");
     cy.contains("button", "Login").click();
-    cy.screenshot("BO-02-after-login");
 
+    // เปิดเมนู
     cy.get(
       "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
     )
       .first()
       .should("be.visible")
       .click();
-    cy.screenshot("BO-03-menu-opened");
 
     cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
-      timeout: 5000,
+      timeout: 500,
     }).click();
-    cy.screenshot("BO-04-menu-selected");
 
+    // เข้าไปยังหน้ารายการคัดสำเนา
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-    cy.screenshot("BO-05-document-copy-page");
 
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";
@@ -52,21 +51,15 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    cy.screenshot("BO-06-selected-request");
+    // cy.screenshot("BO-06-edit-request");
 
-    // อนุมัติคำขอ
-    cy.contains("button", "อนุมัติ").should("be.visible").click();
-    cy.contains("button", "ยืนยันข้อมูล").should("be.visible").click();
-    cy.screenshot("BO-07-after-approve");
+    cy.wait(1000);
+    cy.contains("button", "บันทึกข้อมูลเสร็จสิ้น").click();
 
-    // ยืนยัน dialog
-    cy.get('div[role="dialog"]', { timeout: 5000 })
+    // // กดปุ่ม "ยืนยัน" ภายใน dialog
+    cy.get('div[role="dialog"]')
+      .contains("button", "ยืนยัน")
       .should("be.visible")
-      .within(() => {
-        cy.contains("button", "ยืนยัน")
-          .should("be.visible")
-          .click({ force: true });
-      });
-    cy.screenshot("BO-08-dialog-confirmed");
+      .click({ force: true });
   });
 });

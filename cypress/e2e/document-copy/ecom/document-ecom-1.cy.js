@@ -12,21 +12,47 @@ Cypress.on("uncaught:exception", (err) => {
 
 describe("Document-Copy-FO", () => {
   it("ยื่นคำขอคัดสำเนาเอกสาร พร้อม capture screenshot", () => {
-    cy.visit("https://joint-sao.devditto.com/login/");
-    cy.get("body", { timeout: 50000 }).should("be.visible");
+    // ตั้งค่า viewport เป็น 1280x720 (สามารถเปลี่ยนค่าได้)
+    cy.viewport(1280, 720);
 
-    cy.get('input[name="username"]', { timeout: 30000 })
-      .should("be.visible")
-      .type("suwit01");
-    cy.get('input[name="password"]', { timeout: 20000 })
-      .should("be.visible")
-      .type("System@001");
+    cy.visit("https://jointsao.audit.go.th/login/");
+    cy.get("body", { timeout: 30000 }).should("be.visible");
+    // cy.screenshot("01-login-page"); // capture หน้า login
+    cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
+
+    // login
+    cy.get('input[name="username"]', { timeout: 500 }).type("chatchawan");
+    cy.get('input[name="password"]', { timeout: 500 }).type("Abcd@12345++");
     cy.contains("button", "เข้าสู่ระบบ").click();
 
-    // เปิดเมนูฝั่งซ้าย
-    cy.get('button[type="button"]').first().click();
+    // รอ profile load
+    cy.wait("@getProfile");
 
-    // cy.contains("บริการและค่าธรรมเนียม", { timeout: 500 }).click();
-    // cy.contains("คัดสำเนาเอกสารและข้อมูล").click();
+    // hover menu → click submenu
+    cy.contains(".label", "บริการและค่าธรรมเนียม").trigger("mouseover");
+    cy.contains(".label", "คัดสำเนาเอกสารและข้อมูล")
+      .parents("a")
+      .first()
+      .click({ force: true });
+
+    // รอหน้า load
+    cy.url().should("include", "/document-copy");
+
+    cy.contains("button", "เลือกรายการ").click();
+
+    cy.get("div.MuiCard-root").contains("DOC006").click();
+
+    cy.contains("button", "รายการของฉัน").click();
+
+    // กรอกข้อมูลเอกสาร
+    cy.contains("label", "ไฟล์ที่อยู่อิเล็กทรอนิกส์").click();
+
+    // ส่งคำขอคัดสำเนา
+    cy.contains("button", "ส่งคำขอคัดสำเนา").click();
+    // cy.screenshot("08-submit-request"); // capture หลัง submit
+
+    // ยืนยันการส่ง
+    cy.contains("button", "ยืนยัน").click();
+    // cy.screenshot("09-confirm-submit"); // capture หลัง confirm
   });
 });
