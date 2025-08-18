@@ -19,12 +19,12 @@ describe("Document-Copy-FO", () => {
     cy.visit("https://jointsao.audit.go.th/login/");
     cy.get("body", { timeout: 30000 }).should("be.visible");
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
-
+    cy.wait(2000);
     // login
     cy.get('input[name="username"]', { timeout: 1000 }).type("chatchawan");
     cy.get('input[name="password"]', { timeout: 1000 }).type("Abcd@12345++");
     cy.contains("button", "เข้าสู่ระบบ").click();
-
+    cy.wait(2000);
     // รอ profile load
     cy.wait("@getProfile");
 

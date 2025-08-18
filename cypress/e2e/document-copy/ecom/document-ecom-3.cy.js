@@ -20,10 +20,10 @@ describe("Document-Copy-FO", () => {
   it("ยื่นคำขอคัดสำเนา + อัปโหลดหลักฐานชำระค่าธรรมเนียม", () => {
     cy.viewport(1280, 720);
 
+    cy.intercept("GET", "**/v1/auth/profile").as("getProfile"); // ตั้ง alias ก่อน visit
     cy.visit("https://jointsao.audit.go.th/login/");
+
     cy.get("body", { timeout: 30000 }).should("be.visible");
-    cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
-    cy.wait(3000);
 
     // รอให้ฟอร์ม login แสดงก่อน
     cy.get('input[name="username"]', { timeout: 10000 })

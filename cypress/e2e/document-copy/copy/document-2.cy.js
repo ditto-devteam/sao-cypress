@@ -17,7 +17,6 @@ describe("Document-Copy-BO", () => {
 
   it("Document-Copy-BO", () => {
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-    // cy.screenshot("BO-01-login-page"); // capture หน้า login
 
     // Login
     cy.get('input[name="email"]', { timeout: 10000 })
@@ -93,6 +92,7 @@ describe("Document-Copy-BO", () => {
     cy.wait(900);
     // บันทึกและยืนยัน
     cy.contains("button", "บันทึกข้อมูล", { timeout: 5000 }).click();
+    cy.wait(500);
     cy.contains("button", "ยืนยัน", { timeout: 5000 }).click();
   });
 });
