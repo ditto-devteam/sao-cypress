@@ -10,9 +10,11 @@ Cypress.on("uncaught:exception", (err) => {
   return true;
 });
 
+// อนุมัติ
 describe("Document-Copy-BO", () => {
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
     // เข้าสู่ระบบ Backoffice
+    cy.wait(3000);
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     cy.get("body", { timeout: 20000 }).should("be.visible");
 

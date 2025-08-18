@@ -10,9 +10,11 @@ Cypress.on("uncaught:exception", (err) => {
   return true; // error อื่นยังให้ fail ปกติ
 });
 
+// 1.สร้างเอกสาร  ยื่นคัดสำเนา
 describe("Document-Copy-FO", () => {
   it("ยื่นคำขอคัดสำเนาเอกสาร พร้อม capture screenshot", () => {
     cy.viewport(1280, 720);
+    cy.wait(3000);
 
     cy.visit("https://jointsao.audit.go.th/login/");
     cy.get("body", { timeout: 30000 }).should("be.visible");
@@ -41,11 +43,36 @@ describe("Document-Copy-FO", () => {
     cy.contains("button", "สร้างใบคำขอด้วยตนเอง").click();
     cy.wait(500);
     // กรอกข้อมูลเอกสาร
-    cy.contains("label", "ไฟล์ที่อยู่อิเล็กทรอนิกส์").click();
+    cy.contains("label", "ทางไปรษณีย์").click();
+    cy.get("input.MuiSwitch-input").check({ force: true });
+
     cy.get('input[name="documents[0].documentName"]')
       .should("be.visible")
       .type("ชื่อสำเนาเอกสาร");
     cy.get('input[name="documents[0].qty"]').should("be.visible").type("2");
+
+    cy.wait(500);
+
+    cy.contains("button", "เพิ่มคำขอ").click();
+
+    cy.get('input[name="documents[1].documentName"]')
+      .should("be.visible")
+      .type("เอกสารประมาณงบ เพื่อทดสอบระบบ");
+    cy.get('input[name="documents[1].qty"]').should("be.visible").type("5");
+
+    cy.contains("button", "เพิ่มคำขอ").click();
+
+    cy.get('input[name="documents[2].documentName"]')
+      .should("be.visible")
+      .type("เอกสารประมาณงบ หน่วยงาน อบต");
+    cy.get('input[name="documents[2].qty"]').should("be.visible").type("4");
+
+    cy.contains("button", "เพิ่มคำขอ").click();
+
+    cy.get('input[name="documents[3].documentName"]')
+      .should("be.visible")
+      .type("เอกสารการวางก่อสร้าง หน่วยงาน อบต");
+    cy.get('input[name="documents[3].qty"]').should("be.visible").type("4");
 
     // ส่งคำขอคัดสำเนา
     cy.contains("button", "ส่งคำขอคัดสำเนา").click();

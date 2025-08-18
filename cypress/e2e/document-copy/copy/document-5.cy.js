@@ -9,10 +9,12 @@ Cypress.on("uncaught:exception", (err) => {
   }
   return true; // error อื่นให้ fail ปกติ
 });
+// สร้างใบเสร็จรับเงิน
 
 describe("Document-Copy-BO", () => {
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
     // เข้าสู่ระบบ Backoffice
+    cy.wait(3000);
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
 
     cy.get('input[name="email"]', { timeout: 10000 }).type(
@@ -52,6 +54,7 @@ describe("Document-Copy-BO", () => {
       });
 
     cy.contains("button", "สร้างใบเสร็จรับเงิน", { timeout: 300 }).click();
+    cy.wait(2000);
 
     cy.contains("button", "ยืนยันข้อมูล").should("be.visible").click();
 

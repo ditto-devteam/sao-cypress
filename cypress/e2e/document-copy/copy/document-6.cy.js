@@ -9,10 +9,11 @@ Cypress.on("uncaught:exception", (err) => {
   }
   return true; // error อื่นให้ fail ปกติ
 });
-
+// กรอก รหัสขนส่ง
 //  มันต้องอัพโหลดไฟล์ ด้วย
 describe("Document-Copy-FO", () => {
   it("ยืนยันการบันทึกข้อมูลคัดสำเนา", () => {
+    cy.wait(3000);
     // เข้า login page
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
 
@@ -54,9 +55,8 @@ describe("Document-Copy-FO", () => {
       });
     cy.wait(1000);
 
-    // 1.อัปโหลดไฟล์
+    cy.get('input[placeholder="EX123456789TH"]').type("EX123456789TH");
 
-    cy.get('input[type="file"]').should("exist").attachFile("uploadfile.pdf");
     cy.contains("button", "บันทึกข้อมูลเสร็จสิ้น", { timeout: 400 }).click();
 
     // // กดปุ่ม "ยืนยัน" ภายใน dialog

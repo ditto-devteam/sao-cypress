@@ -11,11 +11,11 @@ Cypress.on("uncaught:exception", (err) => {
   }
   return true;
 });
-
+// อัพโหลด ยอดเงิน เข้าระบบ แบ file
 describe("Document-Copy-FO", () => {
   it("ยื่นคำขอคัดสำเนา + อัปโหลดหลักฐานชำระค่าธรรมเนียม", () => {
     cy.viewport(1280, 720);
-
+    cy.wait(3000);
     cy.visit("https://jointsao.audit.go.th/login/");
     cy.get("body", { timeout: 30000 }).should("be.visible");
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
