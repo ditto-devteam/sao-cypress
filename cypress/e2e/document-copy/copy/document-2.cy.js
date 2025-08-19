@@ -57,115 +57,38 @@ describe("Document-Copy-BO", () => {
 
     cy.wait(1000);
 
-    // ---------------- ต่อ 1 เอกสาร
+    // ข้อมูลเอกสาร 40 ชุด
+    const documentsData = Array.from({ length: 40 }, (_, i) => ({
+      name: `เอกสารตัวอย่าง ${i + 1}`, // ชื่อเอกสาร
+      qty: `${Math.floor(Math.random() * 5) + 1}`, // จำนวนแบบสุ่ม 1-5
+    }));
 
-    cy.get('input[name="documentCopyRequestFileList.0.pageTotal"]', {
-      timeout: 1000,
-    }).type("2");
-    cy.wait(1000);
+    documentsData.forEach((doc, index) => {
+      cy.get(`input[name="documentCopyRequestFileList.${index}.pageTotal"]`)
+        .should("be.visible")
+        .type(doc.qty);
 
-    cy.get(
-      'div[name="documentCopyRequestFileList.0.documentTypeId"] button[aria-label="Open"]'
-    )
-      .first()
-      .click();
-    cy.contains("li", "เอกสารข้อมูลข่าวสารทั่วไป").click();
+      cy.get(
+        `div[name="documentCopyRequestFileList.${index}.documentTypeId"] button[aria-label="Open"]`
+      )
+        .first()
+        .click();
+      cy.contains("li", "เอกสารข้อมูลข่าวสารทั่วไป").click();
 
-    cy.get('input[name="documentCopyRequestFileList.0.pageTotalPrice"]', {
-      timeout: 5000,
-    })
-      .should("be.visible")
-      .clear()
-      .type("20");
+      cy.get(
+        `input[name="documentCopyRequestFileList.${index}.pageTotalPrice"]`
+      )
+        .should("be.visible")
+        .clear()
+        .type(`${doc.qty * 10}`); // สมมติคิดราคาต่อหน้า 10
 
-    cy.get(
-      'div[name="documentCopyRequestFileList.0.approveStatusId"] button[aria-label="Open"]',
-      { timeout: 5000 }
-    )
-      .first()
-      .click();
-    cy.contains("li", "อนุมัติ").click();
-
-    cy.get('input[name="documentCopyRequestFileList.1.pageTotal"]', {
-      timeout: 1000,
-    }).type("2");
-    cy.wait(1000);
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.1.documentTypeId"] button[aria-label="Open"]'
-    )
-      .first()
-      .click();
-    cy.contains("li", "เอกสารข้อมูลข่าวสารทั่วไป").click();
-
-    cy.get('input[name="documentCopyRequestFileList.1.pageTotalPrice"]', {
-      timeout: 5000,
-    })
-      .should("be.visible")
-      .clear()
-      .type("20");
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.1.approveStatusId"] button[aria-label="Open"]',
-      { timeout: 5000 }
-    )
-      .first()
-      .click();
-    cy.contains("li", "อนุมัติ").click();
-
-    cy.get('input[name="documentCopyRequestFileList.2.pageTotal"]', {
-      timeout: 1000,
-    }).type("10");
-    cy.wait(1000);
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.2.documentTypeId"] button[aria-label="Open"]'
-    )
-      .first()
-      .click();
-    cy.contains("li", "เอกสารข้อมูลข่าวสารทั่วไป").click();
-
-    cy.get('input[name="documentCopyRequestFileList.2.pageTotalPrice"]', {
-      timeout: 5000,
-    })
-      .should("be.visible")
-      .clear()
-      .type("3");
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.2.approveStatusId"] button[aria-label="Open"]',
-      { timeout: 5000 }
-    )
-      .first()
-      .click();
-    cy.contains("li", "อนุมัติ").click();
-
-    cy.get('input[name="documentCopyRequestFileList.3.pageTotal"]', {
-      timeout: 1000,
-    }).type("5");
-    cy.wait(1000);
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.3.documentTypeId"] button[aria-label="Open"]'
-    )
-      .first()
-      .click();
-    cy.contains("li", "เอกสารข้อมูลข่าวสารทั่วไป").click();
-
-    cy.get('input[name="documentCopyRequestFileList.3.pageTotalPrice"]', {
-      timeout: 5000,
-    })
-      .should("be.visible")
-      .clear()
-      .type("3");
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.3.approveStatusId"] button[aria-label="Open"]',
-      { timeout: 5000 }
-    )
-      .first()
-      .click();
-    cy.contains("li", "อนุมัติ").click();
+      cy.get(
+        `div[name="documentCopyRequestFileList.${index}.approveStatusId"] button[aria-label="Open"]`
+      )
+        .first()
+        .click();
+      cy.contains("li", "อนุมัติ").click();
+    });
 
     // ต้องเลือกข้อมูลการจัดส่งเอกสารทางไปรษณีย์
     cy.get('[data-cy="shipping-company-input"]').click();

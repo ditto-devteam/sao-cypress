@@ -13,6 +13,7 @@ Cypress.on("uncaught:exception", (err) => {
 describe("Document-Copy-BO", () => {
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
     // เข้าสู่ระบบ Backoffice
+    cy.wait(5000);
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     cy.wait(2000);
     cy.get('input[name="email"]', { timeout: 10000 }).type(

@@ -13,9 +13,9 @@ Cypress.on("uncaught:exception", (err) => {
 describe("Document-Copy-BO", () => {
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
     // เข้าสู่ระบบ Backoffice
+    cy.wait(3000);
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     cy.get("body", { timeout: 20000 }).should("be.visible");
-    // cy.screenshot("BO-01-login-page");
     cy.wait(3000);
     cy.get('input[name="email"]').type("system01@email.com");
     cy.get('input[name="password"]').type("System@001");

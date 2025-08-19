@@ -14,12 +14,13 @@ Cypress.on("uncaught:exception", (err) => {
 describe("Document-Copy-BO", () => {
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
     // เข้าสู่ระบบ Backoffice
-    cy.wait(3000);
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
+
     cy.get("body", { timeout: 20000 }).should("be.visible");
 
     cy.get('input[name="email"]').type("system01@email.com");
     cy.get('input[name="password"]').type("System@001");
+
     cy.contains("button", "Login").click();
 
     cy.get(
@@ -35,6 +36,8 @@ describe("Document-Copy-BO", () => {
 
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
 
+    cy.wait(2000);
+
     // เลือกรายการตามชื่อผู้ขอ
     const targetFirstName = "ชัชวาล";
     cy.get('div[role="row"]')
@@ -49,7 +52,6 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    // cy.screenshot("BO-06-selected-request");
 
     // อนุมัติคำขอ
     cy.contains("button", "อนุมัติ").should("be.visible").click();

@@ -20,16 +20,16 @@ describe("Document-Copy-BO", () => {
 
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     // cy.screenshot("BO-01-login-page"); // capture หน้า login
-    cy.wait(5000);
+    cy.wait(3000);
     // Login
-    cy.get('input[name="email"]', { timeout: 10000 })
+    cy.get('input[name="email"]', { timeout: 5000 })
       .should("be.visible")
       .type(loginEmail);
-    cy.get('input[name="password"]', { timeout: 10000 })
+    cy.get('input[name="password"]', { timeout: 5000 })
       .should("be.visible")
       .type(loginPassword);
     cy.contains("button", "Login").click();
-    cy.wait(5000);
+    cy.wait(2000);
 
     cy.contains("ชำระค่าธรรมเนียม").click();
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
@@ -57,8 +57,29 @@ describe("Document-Copy-BO", () => {
       .click();
 
     cy.contains("li", "อนุมัติ", { timeout: 4000 }).click();
-    // cy.screenshot("BO-07-filled-data"); // capture หลังกรอกข้อมูล
+
+    cy.get('input[name="documentCopyRequestFileList.1.total"]').type("5");
+
+    cy.get(
+      'div[name="documentCopyRequestFileList.1.approveStatusId"] button[aria-label="Open"]',
+      { timeout: 5000 }
+    )
+      .first()
+      .click();
+
+    cy.contains("li", "อนุมัติ", { timeout: 4000 }).click();
+
     cy.wait(1000);
+
+    // ต้องเลือกข้อมูลการจัดส่งเอกสารทางไปรษณีย์
+    cy.get('[data-cy="shipping-company-input"]').click();
+
+    // รอให้รายการ li ปรากฏ
+    cy.get("li").contains("ไปรษณีย์ไทย").click();
+
+    // คลิกเลือก radio button
+    cy.contains("span", "ด่วน (45 บาท)").click();
+
     // เลือกธนาคาร
     cy.contains("label", "เลือกธนาคาร")
       .parent()

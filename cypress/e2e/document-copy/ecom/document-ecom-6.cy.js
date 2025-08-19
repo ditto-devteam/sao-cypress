@@ -12,6 +12,7 @@ Cypress.on("uncaught:exception", (err) => {
 
 describe("Document-Copy-FO", () => {
   it("ยืนยันการบันทึกข้อมูลคัดสำเนา", () => {
+    cy.wait(2000);
     // เข้า login page
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
     cy.wait(2000);
@@ -50,6 +51,9 @@ describe("Document-Copy-FO", () => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
     cy.wait(2000);
+
+    cy.get('input[placeholder="EX123456789TH"]').type("EX123456789TH");
+
     cy.contains("button", "บันทึกข้อมูลเสร็จสิ้น").click();
 
     // // กดปุ่ม "ยืนยัน" ภายใน dialog

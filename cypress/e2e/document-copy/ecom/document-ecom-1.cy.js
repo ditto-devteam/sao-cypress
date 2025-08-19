@@ -13,27 +13,41 @@ Cypress.on("uncaught:exception", (err) => {
 describe("Document-Copy-FO", () => {
   it("ยื่นคำขอคัดสำเนาเอกสาร พร้อม capture screenshot", () => {
     // ตั้งค่า viewport เป็น 1280x720 (สามารถเปลี่ยนค่าได้)
+    // cy.viewport(1280, 720);
+    // cy.wait(3000);
+
+    // cy.visit("https://jointsao.audit.go.th/login/");
+    // cy.get("body", { timeout: 30000 }).should("be.visible");
+    // // cy.screenshot("01-login-page"); // capture หน้า login
+    // cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
+    // // login
+    // // รอให้ช่อง username พร้อม
+    // cy.get('input[name="username"]', { timeout: 5000 })
+    //   .should("be.visible")
+    //   .type("chatchawan");
+
+    // cy.get('input[name="password"]', { timeout: 5000 })
+    //   .should("be.visible")
+    //   .type("Abcd@12345++");
+    // cy.contains("button", "เข้าสู่ระบบ").click();
+
+    // // รอ profile load
+    // cy.wait("@getProfile");
+    // cy.wait(3000);
+
     cy.viewport(1280, 720);
+    cy.wait(3000);
 
     cy.visit("https://jointsao.audit.go.th/login/");
     cy.get("body", { timeout: 30000 }).should("be.visible");
-    // cy.screenshot("01-login-page"); // capture หน้า login
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
-    cy.wait(5000);
+    cy.wait(2000);
     // login
-    // รอให้ช่อง username พร้อม
-    cy.get('input[name="username"]', { timeout: 15000 })
-      .should("be.visible")
-      .type("chatchawan");
+    cy.get('input[name="username"]', { timeout: 5000 }).type("chatchawan");
+    cy.get('input[name="password"]', { timeout: 5000 }).type("Abcd@12345++");
 
-    cy.get('input[name="password"]', { timeout: 15000 })
-      .should("be.visible")
-      .type("Abcd@12345++");
-
-    // cy.get('input[name="username"]', { timeout: 4000 }).type("chatchawan");
-    // cy.get('input[name="password"]', { timeout: 4000 }).type("Abcd@12345++");
     cy.contains("button", "เข้าสู่ระบบ").click();
-
+    cy.wait(2000);
     // รอ profile load
     cy.wait("@getProfile");
 
@@ -46,16 +60,18 @@ describe("Document-Copy-FO", () => {
 
     // รอหน้า load
     cy.url().should("include", "/document-copy");
-
+    cy.wait(3000);
     cy.contains("button", "เลือกรายการ").click();
 
     cy.get("div.MuiCard-root").contains("DOC006").click();
+    cy.get("div.MuiCard-root").contains("DOC008").click();
 
     cy.contains("button", "รายการของฉัน").click();
-
+    cy.wait(2000);
     // กรอกข้อมูลเอกสาร
-    cy.contains("label", "ไฟล์ที่อยู่อิเล็กทรอนิกส์").click();
-
+    // cy.contains("label", "ไฟล์ที่อยู่อิเล็กทรอนิกส์").click();
+    cy.contains("label", "ทางไปรษณีย์").click();
+    cy.get("input.MuiSwitch-input").check({ force: true });
     // ส่งคำขอคัดสำเนา
     cy.contains("button", "ส่งคำขอคัดสำเนา").click();
     // cy.screenshot("08-submit-request"); // capture หลัง submit

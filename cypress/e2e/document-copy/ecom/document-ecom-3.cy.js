@@ -19,6 +19,7 @@ describe("Document-Copy-FO", () => {
 
   it("ยื่นคำขอคัดสำเนา + อัปโหลดหลักฐานชำระค่าธรรมเนียม", () => {
     cy.viewport(1280, 720);
+    cy.wait(5000);
 
     cy.intercept("GET", "**/v1/auth/profile").as("getProfile"); // ตั้ง alias ก่อน visit
     cy.visit("https://jointsao.audit.go.th/login/");
