@@ -53,7 +53,7 @@ describe("Document-Copy-FO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    cy.wait(1000);
+    cy.wait(2000);
 
     cy.get('input[placeholder="EX123456789TH"]').type("EX123456789TH");
 

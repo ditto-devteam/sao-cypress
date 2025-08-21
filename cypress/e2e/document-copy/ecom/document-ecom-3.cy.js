@@ -13,32 +13,35 @@ Cypress.on("uncaught:exception", (err) => {
 });
 
 describe("Document-Copy-FO", () => {
-  const loginEmail = "system01@email.com";
-  const loginPassword = "System@001";
-  const targetFirstName = "ชัชวาล";
+  // const loginEmail = "system01@email.com";
+  // const loginPassword = "System@001";
+  // const targetFirstName = "ชัชวาล";
+
+  const loginUsername = "chatchawan";
+  const loginPassword = "Abcd@12345++";
+
+  const documentNames = Array.from(
+    { length: 3 },
+    (_, i) => `เอกสารโครงการก่อสร้าง ${String(i + 1).padStart(3, "0")}`
+  );
 
   it("ยื่นคำขอคัดสำเนา + อัปโหลดหลักฐานชำระค่าธรรมเนียม", () => {
     cy.viewport(1280, 720);
-    cy.wait(5000);
 
-    cy.intercept("GET", "**/v1/auth/profile").as("getProfile"); // ตั้ง alias ก่อน visit
-    cy.visit("https://jointsao.audit.go.th/login/");
-
-    cy.get("body", { timeout: 30000 }).should("be.visible");
-
-    // รอให้ฟอร์ม login แสดงก่อน
-    cy.get('input[name="username"]', { timeout: 10000 })
-      .should("be.visible")
-      .type("chatchawan");
-
-    cy.get('input[name="password"]', { timeout: 10000 })
-      .should("be.visible")
-      .type("Abcd@12345++");
-
-    cy.contains("button", "เข้าสู่ระบบ").click();
+    cy.visit("https://jointsao.audit.go.th", {
+      timeout: 30000,
+      failOnStatusCode: false,
+    });
     cy.wait(2000);
-    // รอ profile load
-    cy.wait("@getProfile");
+
+    // Login
+    cy.contains("a", "เข้าใช้งานระบบ").click();
+    cy.url().should("include", "/login");
+    cy.wait(2000);
+    cy.get('input[name="username"]').type(loginUsername);
+    cy.get('input[name="password"]').type(loginPassword);
+    cy.contains("button", "เข้าสู่ระบบ").click();
+    cy.url().should("include", "/home");
 
     // hover menu → click submenu
     cy.contains(".label", "บริการและค่าธรรมเนียม").trigger("mouseover");
@@ -52,7 +55,7 @@ describe("Document-Copy-FO", () => {
 
     cy.contains("a", "ประวัติการคัดสำเนา").should("be.visible").click();
     cy.wait(3000);
-    // // กดดูรายละเอียดรายการแรก
+
     cy.get('button[aria-label="ดูรายละเอียด"]')
       .first()
       .should("be.visible")

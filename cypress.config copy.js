@@ -13,4 +13,10 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
   },
+
+  // e2e: {
+  //   // baseUrl: 'https://reforest-office.idevcool.com',
+  //   baseUrl: "https://sao.devditto.com/login/",
+  //   // keystrokeDelay: 50,
+  // },
 });

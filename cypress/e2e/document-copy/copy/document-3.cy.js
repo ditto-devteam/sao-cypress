@@ -17,20 +17,19 @@ describe("Document-Copy-FO", () => {
   it("ยื่นคำขอคัดสำเนา + อัปโหลดหลักฐานชำระค่าธรรมเนียม", () => {
     cy.viewport(1280, 720);
 
-    cy.visit("https://jointsao.audit.go.th/login/");
+    cy.visit("https://jointsao.audit.go.th", {
+      timeout: 30000,
+      failOnStatusCode: false,
+    });
+    cy.wait(1000);
 
-    cy.get("body", { timeout: 30000 }).should("be.visible");
-
-    cy.intercept("GET", "**/v1/auth/profile").as("getProfile");
-
-    // login
-    cy.get('input[name="username"]', { timeout: 15000 }).type("chatchawan");
-    cy.get('input[name="password"]', { timeout: 15000 }).type("Abcd@12345++");
-
+    cy.contains("a", "เข้าใช้งานระบบ").click();
+    cy.url().should("include", "/login");
+    cy.get('input[name="username"]').type("chatchawan");
+    cy.get('input[name="password"]').type("Abcd@12345++");
     cy.contains("button", "เข้าสู่ระบบ").click();
 
-    // รอ profile load
-    cy.wait("@getProfile");
+    cy.url().should("include", "/home");
 
     cy.wait(2000);
 

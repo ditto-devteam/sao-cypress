@@ -14,26 +14,26 @@ describe("Document-Copy-BO", () => {
   const loginEmail = "system01@email.com";
   const loginPassword = "System@001";
   const targetFirstName = "ชัชวาล";
+  const documentNames = Array.from(
+    { length: 3 },
+    (_, i) => `เอกสารโครงการก่อสร้าง ${String(i + 1).padStart(3, "0")}`
+  );
 
   it("Document-Copy-BO", () => {
     cy.viewport(1280, 720);
 
+    // --- Login ---
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-    // cy.screenshot("BO-01-login-page"); // capture หน้า login
-    cy.wait(3000);
-    // Login
-    cy.get('input[name="email"]', { timeout: 5000 })
-      .should("be.visible")
-      .type(loginEmail);
-    cy.get('input[name="password"]', { timeout: 5000 })
-      .should("be.visible")
-      .type(loginPassword);
+    cy.get('input[name="email"]').should("be.visible").type(loginEmail);
+    cy.get('input[name="password"]').should("be.visible").type(loginPassword);
     cy.contains("button", "Login").click();
     cy.wait(2000);
 
+    // --- เข้าหน้า Document-Copy ---
     cy.contains("ชำระค่าธรรมเนียม").click();
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-    // หา row ของผู้ยื่น FO
+
+    // --- เลือกแถวของผู้ยื่น ---
     cy.get('div[role="row"]', { timeout: 10000 })
       .filter((index, row) => {
         const firstName = Cypress.$(row)
@@ -49,27 +49,17 @@ describe("Document-Copy-BO", () => {
 
     cy.wait(2000);
 
-    cy.get(
-      'div[name="documentCopyRequestFileList.0.approveStatusId"] button[aria-label="Open"]',
-      { timeout: 5000 }
-    )
-      .first()
-      .click();
+    // --- Loop เอกสารทั้งหมด ---
+    documentNames.forEach((doc, index) => {
+      cy.log(`กรอกข้อมูล: ${doc.name} (${doc.qty} หน้า)`);
 
-    cy.contains("li", "อนุมัติ", { timeout: 4000 }).click();
-
-    cy.get('input[name="documentCopyRequestFileList.1.total"]').type("5");
-
-    cy.get(
-      'div[name="documentCopyRequestFileList.1.approveStatusId"] button[aria-label="Open"]',
-      { timeout: 5000 }
-    )
-      .first()
-      .click();
-
-    cy.contains("li", "อนุมัติ", { timeout: 4000 }).click();
-
-    cy.wait(1000);
+      cy.get(
+        `div[name="documentCopyRequestFileList.${index}.approveStatusId"] button[aria-label="Open"]`
+      )
+        .first()
+        .click();
+      cy.contains("li", "อนุมัติ").click();
+    });
 
     // ต้องเลือกข้อมูลการจัดส่งเอกสารทางไปรษณีย์
     cy.get('[data-cy="shipping-company-input"]').click();
@@ -80,18 +70,20 @@ describe("Document-Copy-BO", () => {
     // คลิกเลือก radio button
     cy.contains("span", "ด่วน (45 บาท)").click();
 
-    // เลือกธนาคาร
     cy.contains("label", "เลือกธนาคาร")
       .parent()
       .find('button[aria-label="Open"]', { timeout: 5000 })
       .click();
-    cy.wait(500);
     cy.contains("li", "ธนาคารกรุงไทย").click();
-    // cy.screenshot("BO-08-selected-bank"); // capture หลังเลือกธนาคาร
-
+    cy.wait(900);
     // บันทึกและยืนยัน
     cy.contains("button", "บันทึกข้อมูล", { timeout: 5000 }).click();
+    cy.wait(1000);
     cy.contains("button", "ยืนยัน", { timeout: 5000 }).click();
-    // cy.screenshot("BO-09-after-confirm"); // capture หลังยืนยัน
+
+    // รอ alert ปรากฏ
+    cy.get("div.MuiAlert-message", { timeout: 10000 })
+      .should("be.visible") // ตรวจสอบว่า element ปรากฏ
+      .and("contain.text", "บันทึกข้อมูลสำเร็จ"); // ตรวจสอบข้อความตรงกับที่ต้องการ
   });
 });

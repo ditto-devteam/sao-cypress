@@ -11,32 +11,30 @@ Cypress.on("uncaught:exception", (err) => {
 });
 
 describe("Document-Copy-BO", () => {
+  const loginEmail = "system01@email.com";
+  const loginPassword = "System@001";
+  const targetFirstName = "ชัชวาล";
+  const documentNames = Array.from(
+    { length: 3 },
+    (_, i) => `เอกสารโครงการก่อสร้าง ${String(i + 1).padStart(3, "0")}`
+  );
+
   it("อนุมัติคำขอคัดสำเนาเอกสาร", () => {
-    // เข้าสู่ระบบ Backoffice
-    cy.wait(3000);
+    cy.viewport(1280, 720);
+
+    // --- Login ---
     cy.visit("https://jointsao-backoffice.audit.go.th/login");
-    cy.get("body", { timeout: 20000 }).should("be.visible");
-    cy.wait(3000);
-    cy.get('input[name="email"]').type("system01@email.com");
-    cy.get('input[name="password"]').type("System@001");
+    cy.get('input[name="email"]').should("be.visible").type(loginEmail);
+    cy.get('input[name="password"]').should("be.visible").type(loginPassword);
     cy.contains("button", "Login").click();
     cy.wait(2000);
-    cy.get(
-      "button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.css-10ygcul"
-    )
-      .first()
-      .should("be.visible")
-      .click();
 
-    cy.contains("ข้อมูลคัดสำเนาเอกสารและชำระค่าธรรมเนียม", {
-      timeout: 5000,
-    }).click();
-
+    // --- เข้าหน้า Document-Copy ---
+    cy.contains("ชำระค่าธรรมเนียม").click();
     cy.get('a[href="/010501/document-copy"]').should("be.visible").click();
-    cy.wait(2000);
-    // เลือกรายการตามชื่อผู้ขอ
-    const targetFirstName = "ชัชวาล";
-    cy.get('div[role="row"]')
+
+    // --- เลือกแถวของผู้ยื่น ---
+    cy.get('div[role="row"]', { timeout: 10000 })
       .filter((index, row) => {
         const firstName = Cypress.$(row)
           .find('div[data-field="I-requestFirstName"]')
@@ -48,14 +46,15 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
-    // cy.screenshot("BO-06-selected-request");
-    cy.wait(2000);
-    // อนุมัติคำขอ
-    cy.contains("button", "อนุมัติ").should("be.visible").click();
-    cy.contains("button", "ยืนยันข้อมูล").should("be.visible").click();
-    // cy.screenshot("BO-07-after-approve");
 
-    // ยืนยัน dialog
+    cy.wait(2000);
+
+    // // อนุมัติคำขอ
+    cy.contains("button", "อนุมัติ").should("be.visible").click();
+    cy.wait(2000);
+    cy.contains("button", "ยืนยันข้อมูล").should("be.visible").click();
+
+    // // ยืนยัน dialog
     cy.get('div[role="dialog"]', { timeout: 5000 })
       .should("be.visible")
       .within(() => {
@@ -63,6 +62,5 @@ describe("Document-Copy-BO", () => {
           .should("be.visible")
           .click({ force: true });
       });
-    // cy.screenshot("BO-08-dialog-confirmed");
   });
 });

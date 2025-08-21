@@ -52,6 +52,7 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
+    cy.wait(2000);
 
     cy.contains("button", "สร้างใบเสร็จรับเงิน", { timeout: 300 }).click();
     cy.wait(2000);

@@ -52,6 +52,7 @@ describe("Document-Copy-BO", () => {
       .within(() => {
         cy.get('span[aria-label="แก้ไขข้อมูล"] button').click();
       });
+    cy.wait(2000);
 
     // อนุมัติคำขอ
     cy.contains("button", "อนุมัติ").should("be.visible").click();
