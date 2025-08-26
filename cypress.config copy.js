@@ -1,22 +1,37 @@
 const { defineConfig } = require("cypress");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = defineConfig({
-  component: {
-    devServer: {
-      framework: "next",
-      bundler: "webpack",
-    },
-  },
-
   e2e: {
+    // point ที่ต้อง register task
     setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
-  },
+      on("task", {
+        createFolder(folderName) {
+          const folderPath = path.join(
+            "/Users/chatchawan/Documents/Work/Project/active_project/SAO/sao-cypress/cypress/screenshots",
+            folderName
+          );
 
-  // e2e: {
-  //   // baseUrl: 'https://reforest-office.idevcool.com',
-  //   baseUrl: "https://sao.devditto.com/login/",
-  //   // keystrokeDelay: 50,
-  // },
+          try {
+            if (!fs.existsSync(folderPath)) {
+              fs.mkdirSync(folderPath, { recursive: true });
+              console.log(`สร้าง folder สำเร็จ: ${folderPath}`);
+            } else {
+              console.log(`folder มีอยู่แล้ว: ${folderPath}`);
+            }
+            return null; // ✅ ต้อง return null
+          } catch (err) {
+            console.error(err);
+            return err; // ✅ return error object
+          }
+        },
+      });
+
+      return config;
+    },
+    baseUrl: "https://jointsao.audit.go.th",
+    viewportWidth: 1280,
+    viewportHeight: 720,
+  },
 });

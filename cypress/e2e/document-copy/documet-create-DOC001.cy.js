@@ -13,7 +13,7 @@ Cypress.on("uncaught:exception", (err) => {
 });
 
 describe("master data", () => {
-  const loginEmail = "system01@email.com";
+  const loginEmail = "chatchawan";
   const loginPassword = "System@001";
 
   const documentNames = Array.from(

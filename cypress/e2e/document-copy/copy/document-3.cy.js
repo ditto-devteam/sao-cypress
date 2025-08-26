@@ -26,7 +26,7 @@ describe("Document-Copy-FO", () => {
     cy.contains("a", "เข้าใช้งานระบบ").click();
     cy.url().should("include", "/login");
     cy.get('input[name="username"]').type("chatchawan");
-    cy.get('input[name="password"]').type("Abcd@12345++");
+    cy.get('input[name="password"]').type("System@001");
     cy.contains("button", "เข้าสู่ระบบ").click();
 
     cy.url().should("include", "/home");
